@@ -1,0 +1,6 @@
+time_s,status,signal,reason
+0.00,UNSAFE,UNKNOWN,2 vehicle(s) moving / approaching
+1.37,SAFE,RED,Red signal and vehicles stopped
+4.73,UNSAFE,RED,1 vehicle(s) moving / approaching
+9.40,SAFE,RED,Red signal and vehicles stopped
+10.17,UNSAFE,RED,2 vehicle(s) moving / approaching
