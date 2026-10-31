@@ -1,6 +1,22 @@
 time_s,status,signal,reason
-0.00,UNSAFE,UNKNOWN,2 vehicle(s) moving / approaching
-1.37,SAFE,RED,Red signal and vehicles stopped
-4.73,UNSAFE,RED,1 vehicle(s) moving / approaching
-9.40,SAFE,RED,Red signal and vehicles stopped
-10.17,UNSAFE,RED,2 vehicle(s) moving / approaching
+0.00,UNSAFE,YELLOW,7 vehicle(s) moving / approaching
+58.69,SAFE,RED,Red signal and vehicles stopped
+59.23,UNSAFE,RED,1 vehicle(s) moving / approaching
+66.45,SAFE,RED,Red signal and vehicles stopped
+68.12,UNSAFE,RED,1 vehicle(s) moving / approaching
+69.25,SAFE,RED,Red signal and vehicles stopped
+69.45,UNSAFE,RED,1 vehicle(s) moving / approaching
+71.48,SAFE,RED,Red signal and vehicles stopped
+73.42,UNSAFE,RED,1 vehicle(s) moving / approaching
+75.58,SAFE,RED,Red signal and vehicles stopped
+77.98,UNSAFE,RED,1 vehicle(s) moving / approaching
+78.41,SAFE,RED,Red signal and vehicles stopped
+78.95,UNSAFE,RED,1 vehicle(s) moving / approaching
+80.58,SAFE,RED,Red signal and vehicles stopped
+80.98,UNSAFE,RED,1 vehicle(s) moving / approaching
+81.08,SAFE,RED,Red signal and vehicles stopped
+82.24,UNSAFE,RED,2 vehicle(s) moving / approaching
+85.94,SAFE,RED,Red signal and vehicles stopped
+86.31,UNSAFE,RED,1 vehicle(s) moving / approaching
+86.81,SAFE,RED,Red signal and vehicles stopped
+87.21,UNSAFE,RED,1 vehicle(s) moving / approaching

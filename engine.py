@@ -59,7 +59,7 @@ class SafetyEngine:
         frame_state = UNKNOWN
         if weights:
             total = sum(weights.values())
-            for s in (GREEN, YELLOW, RED):          # most dangerous first
+            for s in (GREEN, YELLOW, RED):     
                 if weights.get(s, 0) >= 0.3 * total:
                     frame_state = s
                     break
@@ -70,13 +70,12 @@ class SafetyEngine:
         if len(known) < 0.4 * len(self.votes):
             return UNKNOWN
         counts = {s: known.count(s) for s in (GREEN, YELLOW, RED)}
-        # Asymmetric: switching TO green/amber is recognised quickly (a third of
-        # the recent votes is enough); RED needs to win the vote.
+        
         if counts[GREEN] + counts[YELLOW] >= 0.35 * len(known):
             return GREEN if counts[GREEN] >= counts[YELLOW] else YELLOW
         return RED if counts[RED] else UNKNOWN
 
-    # ---- vehicles -------------------------------------------------------
+
     def _is_stopping(self, tr):
         c = self.cfg
         v = max(tr.approach_mps, 0.1)
@@ -86,20 +85,20 @@ class SafetyEngine:
     def is_threat(self, tr, red_settled=False):
         c = self.cfg
         if tr.age_s < c.track_min_age_s:
-            return tr.dist_m < c.danger_dist_m      # motion unknown: be careful
+            return tr.dist_m < c.danger_dist_m    
         if tr.speed_kmh <= c.moving_kmh:
             return False
         if tr.approach_mps < c.receding_mps:
-            return False                              # driving away
+            return False                              
         if red_settled and self._is_stopping(tr):
-            return False                              # braking for the red
+            return False                              
         if tr.dist_m < c.danger_dist_m:
             return True
         if tr.dist_m <= c.ttc_max_dist_m and tr.approach_mps >= c.min_approach_mps:
             return tr.dist_m / tr.approach_mps < c.ttc_limit_s
         return False
 
-    # ---- main -----------------------------------------------------------
+    
     def update(self, t, vehicles, lights):
         tracks = self.tracker.update(vehicles, t)
         light = self._light_state(t, lights)
@@ -110,9 +109,9 @@ class SafetyEngine:
         if threats:
             raw, why = UNSAFE, f"{len(threats)} vehicle(s) moving / approaching"
         elif light == GREEN:
-            raw, why = UNSAFE, "Green signal: traffic can move"
+            raw, why = UNSAFE, "Green signal: vehicle(s) moving"
         elif light == YELLOW:
-            raw, why = UNSAFE, "Amber signal: vehicles still clearing"
+            raw, why = UNSAFE, "Yellow signal: vehicles still clearing"
         elif light == RED:
             if t - self.red_since < self.cfg.red_settle_s:
                 raw, why = WAIT, "Red just came on: wait for vehicles to stop"

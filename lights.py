@@ -1,4 +1,3 @@
-"""Traffic-light colour classification (HSV) used when no light-state model exists."""
 import cv2
 import numpy as np
 RED, YELLOW, GREEN, UNKNOWN = "RED", "YELLOW", "GREEN", "UNKNOWN"
@@ -52,12 +51,3 @@ def classify_light(crop):
         return UNKNOWN, 0.0
     return best, float(purity * min(1.0, scores[best] / 0.05))
 
-def state_from_class_name(name):
-    n = name.lower()
-    if "red" in n:
-        return RED
-    if "yellow" in n or "amber" in n:
-        return YELLOW
-    if "green" in n:
-        return GREEN
-    return None

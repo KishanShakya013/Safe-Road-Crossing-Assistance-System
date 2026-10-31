@@ -25,8 +25,8 @@ class Config:
 
     moving_kmh: float = 5.0       # faster speed then moving
     danger_dist_m: float = 20.0   # any moving vehicle closer than this = threat
-    ttc_limit_s: float = 8.0      # time-to-reach limit for approaching vehicles
-    ttc_max_dist_m: float = 60.0  # only trust approach speed inside this range
+    ttc_limit_s: float = 6.0      # time-to-reach limit for approaching vehicles
+    ttc_max_dist_m: float = 40.0  # only trust approach speed inside this range
     min_approach_mps: float = 4.0
     receding_mps: float = -1.0    # moving away faster than this = not a threat
     speed_window_s: float = 1.2 
@@ -34,7 +34,7 @@ class Config:
     track_max_missed_s: float = 1.0
     # A vehicle on a settled red that is clearly braking and can stop in the
     # distance it has left is treated as stopping, not as a threat.
-    stop_margin_m: float = 3.0
+    stop_margin_m: float = 2.0
     min_decel_mps2: float = 1.0
     max_brake_mps2: float = 4.5
 

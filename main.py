@@ -10,37 +10,22 @@ from tts import Speaker
 from viz import draw
 from detector import Detector
 
-CANDIDATE_LIGHT_MODELS = ["models/traffic_light_best.pt", "runs_s2tld/s2tld_yolov8/weights/best.pt"]
-
 def parse():
     p = argparse.ArgumentParser()
     p.add_argument("--source")
     p.add_argument("--weights", default="yolov8n.pt")
-    p.add_argument("--light-weights")
     p.add_argument("--output", default="output/annotated.mp4")
     p.add_argument("--show", action="store_true")
-    p.add_argument("--no-tts", action="store_true")
-    p.add_argument("--device", default=None)
     p.add_argument("--conf", type=float, default=0.35)
     p.add_argument("--hfov", type=float, default=70.0)
-    p.add_argument("--max-frames", type=int, default=0)
-    p.add_argument("--demo-seconds", type=float, default=46.0)
     return p.parse_args()
-
-def find_light_weights(arg):
-    if arg:
-        return arg
-    for c in CANDIDATE_LIGHT_MODELS:
-        if os.path.exists(c):
-            return c
-    return None
-
+    
 def frames_from_video(src):
-    live = isinstance(src, int)
+    
     cap = cv2.VideoCapture(src)
     if not cap.isOpened():
         raise SystemExit(f"Could not open video source: {src}")
-    fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+    fps =  cap.get(cv2.CAP_PROP_FPS) or 30.0
     if fps > 240:
         fps = 30.0
     w, h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -52,32 +37,29 @@ def frames_from_video(src):
                 break
             yield fr, None
         cap.release()
-    return gen(), fps, w, h, live
+    return gen(), fps, w, h
 
 def main():
     a = parse()
     cfg = Config(conf=a.conf, hfov_deg=a.hfov)
     demo = a.source
     detector = None
-   
+    
     source = int(a.source) if a.source.isdigit() else a.source
-    frames, fps, W, H, live = frames_from_video(source)
-    lw = find_light_weights(a.light_weights)
-    print(f"[INFO] Vehicle model: {a.weights} | Light model: {lw or 'none (HSV colour fallback)'}")
-    detector = Detector(a.weights, lw, cfg, a.device)
-
-    os.makedirs(os.path.dirname(a.output) or ".", exist_ok=True)
+    frames, fps, W, H= frames_from_video(source)
+    print(f"[INFO] Vehicle model: {a.weights} | Light model: HSV colour")
+    detector = Detector(a.weights, cfg)
     out = cv2.VideoWriter(a.output, cv2.VideoWriter_fourcc(*"mp4v"), fps, (W, H))
     log_path = os.path.splitext(a.output)[0] + "_events.csv"
     logf = open(log_path, "w", newline="")
     log = csv.writer(logf)
     log.writerow(["time_s", "status", "signal", "reason"])
-    speaker = Speaker(enabled=not a.no_tts)
+    speaker = Speaker()
     engine = SafetyEngine(cfg, W)
-
+    
     t0, n = time.time(), 0
     for frame, gt in frames:
-        t = (time.time() - t0) if live else n / fps
+        t =  n / fps
         dets = gt if gt is not None else detector.detect(frame)
         vehicles = [d for d in dets if d.name in VEHICLE_CLASSES]
         lights = [d for d in dets if d.name == LIGHT_CLASS]
@@ -95,8 +77,7 @@ def main():
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         n += 1
-        if a.max_frames and n >= a.max_frames:
-            break
+       
 
     out.release()
     logf.close()

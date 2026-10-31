@@ -1,8 +1,7 @@
-"""Drawing helpers."""
 import cv2
 from config import SAFE, CAUTION, WAIT, UNSAFE
 
-STATUS_COLOUR = {SAFE: (0, 150, 0), CAUTION: (0, 190, 230), WAIT: (0, 140, 255), UNSAFE: (0, 0, 200)}
+STATUS_COLOUR = {SAFE: (0, 150, 0), CAUTION: (0, 140, 255), WAIT:(0, 190, 230) , UNSAFE: (0, 0, 200)}
 LIGHT_COLOUR = {"RED": (0, 0, 255), "YELLOW": (0, 200, 255), "GREEN": (0, 255, 0), "UNKNOWN": (255, 255, 255)}
 
 def _label(frame, text, org, col, scale):
@@ -10,7 +9,7 @@ def _label(frame, text, org, col, scale):
     x, y = org
     y = max(th + 4, y)
     cv2.rectangle(frame, (x, y - th - 4), (x + tw + 4, y + 3), col, -1)
-    cv2.putText(frame, text, (x + 2, y - 1), cv2.FONT_HERSHEY_SIMPLEX, scale, (255, 255, 255), 1, cv2.LINE_AA)
+    cv2.putText(frame, text, (x + 2, y - 1), cv2.FONT_HERSHEY_SIMPLEX, scale, (0, 0, 0), 1, cv2.LINE_AA)
 
 def draw(frame, dec, demo=False):
     H, W = frame.shape[:2]
@@ -18,7 +17,7 @@ def draw(frame, dec, demo=False):
     for d in dec.lights:
         col = LIGHT_COLOUR.get(d.state or "UNKNOWN", (255, 255, 255))
         cv2.rectangle(frame, d.box[:2], d.box[2:], col, 2)
-        _label(frame, f"Light: {d.state or '?'}", (d.box[0], d.box[3] + int(18 * s)), (60, 60, 60), 0.5 * s)
+        _label(frame, f"Light: {d.state or '?'}", (d.box[0], d.box[3] + int(18 * s)), (255, 255, 255), 0.5 * s)
     for tr in dec.tracks:
         if abs(tr.last_t - dec.t) > 1e-9:
             continue 
