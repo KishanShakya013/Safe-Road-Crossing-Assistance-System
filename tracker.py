@@ -11,22 +11,22 @@ class Det:
     box: Tuple[int, int, int, int]
     name: str
     conf: float = 1.0
-    state: Optional[str] = None  # only for traffic lights
+    state: Optional[str] = None 
 
 class Track:
     def __init__(self, tid, det, t, cfg, focal):
         self.id, self.name, self.box = tid, det.name, det.box
         self.cfg = cfg
-        self.k = REAL_WIDTH_M.get(det.name, 1.8) * focal  # dist = k / width_px
+        self.k = REAL_WIDTH_M.get(det.name, 1.8) * focal
         self.first_t = self.last_t = t
-        self.hist = deque()           # (t, cx, smoothed_width)
+        self.hist = deque()         
         self.ws = None
         self.speed_kmh = 0.0
-        self.approach_mps = 0.0       # +ve = coming towards the camera
+        self.approach_mps = 0.0       
         self.dist_m = float("inf")
         self._have_speed = False
-        self.decel_mps2 = 0.0         # +ve = slowing down
-        self.app_hist = deque()       # (t, approach_mps)
+        self.decel_mps2 = 0.0         
+        self.app_hist = deque()       
         self.update(det, t)
 
     @property
@@ -79,7 +79,7 @@ class VehicleTracker:
         return math.hypot(b[2] - b[0], b[3] - b[1])
 
     def update(self, dets, t):
-        matched_t, matched_d = set(), set()
+        matched_d = set()
         if self.tracks and dets:
             C = np.zeros((len(self.tracks), len(dets)))
             for i, tr in enumerate(self.tracks):
@@ -89,12 +89,11 @@ class VehicleTracker:
                     scale = 0.5 * (self._diag(tr.box) + self._diag(d.box)) + 1e-6
                     wt, wd = max(1.0, tr.box[2] - tr.box[0]), max(1.0, d.box[2] - d.box[0])
                     C[i, j] = (math.hypot(cx - dx, cy - dy) / scale
-                               + 2.0 * abs(math.log(wd / wt))          # similar size
+                               + 2.0 * abs(math.log(wd / wt))        
                                + (0.3 if tr.name != d.name else 0.0))
             for i, j in zip(*linear_sum_assignment(C)):
                 if C[i, j] <= 1.0:
                     self.tracks[i].update(dets[j], t)
-                    matched_t.add(i)
                     matched_d.add(j)
         for j, d in enumerate(dets):
             if j not in matched_d:

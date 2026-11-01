@@ -18,7 +18,7 @@ SPEECH = {
 @dataclass
 class Config:
 
-    hfov_deg: float = 70.0        # horizontal field of view (phone camera ~65-78)
+    hfov_deg: float = 70.0     
     conf: float = 0.35
     imgsz: int = 640
     light_imgsz: int = 960
@@ -37,9 +37,9 @@ class Config:
     stop_margin_m: float = 2.0
     min_decel_mps2: float = 1.0
     max_brake_mps2: float = 4.5
-
+    
     # signal behaviour (Indian practice: amber means stop, but many riders
     # and drivers run it or the early red, so we wait before saying SAFE)
     light_vote_s: float = 0.6
     red_settle_s: float = 0.0     # red must be stable this long
-    safe_confirm_s: float = 0.0   # SAFE must hold this long before announcin
+    safe_confirm_s: float = 0.0   # SAFE must hold this long before announcing
